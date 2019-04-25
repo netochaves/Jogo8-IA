@@ -15,14 +15,35 @@
     <script src="heap.js"></script>
     <script src="index.js"></script>
     <link href="index.css" rel="stylesheet" type="text/css" />
-    <div id="container-bfs" class="puzzle" style="width: 220px; height: 220px">
-      <br />
-    </div>
-    Tempo gasto: <span id="tempo">0</span>ms
-    <button id="resolver">Resolver</button>
-    <button id="gerar">Gerar</button>
+    <center>
+      <h1>Jogo dos 8</h1>
+      <div class="custom-select" style="width:200px;">
+        Algoritmo
+        <select id="algoritmos">
+          <option value="PROFUNDIDADE">Profundidade</option>
+          <option value="LARGURA">Largura</option>
+          <option value="GULOSA">Gulosa</option>
+          <option value="A">A*</option>
+        </select>
+      </div>
+      <div
+        id="container-bfs"
+        class="puzzle"
+        style="width: 220px; height: 220px"
+      >
+        <br />
+      </div>
+      Tempo gasto: <span id="tempo">0</span>ms
+      <button id="resolver" onclick="">Resolver</button>
+      <button id="gerar">Gerar</button>
+    </center>
+
     <script type="text/javascript">
-      new Jogo8GUI($("#container-bfs"), Algoritmo.A)
+      var value
+      const getVal = function() {
+        value = $("#algoritmos").val()
+      }
+      new Jogo8GUI($("#container-bfs"), value)
     </script>
   </body>
 </html>

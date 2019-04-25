@@ -6,9 +6,9 @@ Direction = {
 }
 
 Algoritmo = {
-  LARGURA: "Busca em largura",
-  PROFUNDIDADE: "Busca em profundidade",
-  A: "Busca com A*"
+  LARGURA: "LARGURA",
+  PROFUNDIDADE: "PROFUNDIDADE",
+  A: "A"
 }
 
 Estado = {
@@ -16,13 +16,14 @@ Estado = {
 }
 
 class Jogo8 {
-  constructor(dimension, algoritmo) {
+  constructor(dimension) {
     this.borda = []
     this.resolucao = []
     this.dimension = 3
-    this.algoritmo = algoritmo
+    this.algoritmo = "LARGURA"
     this.lastMove = null
     this.estadosRepetidos = []
+
     for (var i = 0; i < dimension; i++) {
       this.borda.push([])
       for (var j = 0; j < dimension; j++) {
@@ -147,9 +148,11 @@ class Jogo8 {
       var move = movimentosPossiveis[i]
       if (move != this.lastMove) {
         var newJogo = this.getCopy()
+        //if (this.checkRepeat(newJogo) === true) {
         newJogo.move(move)
         newJogo.resolucao.push(move)
         filhos.push(newJogo)
+        //}
       }
     }
     return filhos
@@ -180,6 +183,7 @@ class Jogo8 {
     var j
     for (var k = 0; k < Estado.repetidos.length; k++) {
       j = 0
+      bool = false
       Estado.repetidos[k].borda.forEach(e => {
         console.log("LinhaR: " + e)
         console.log("Linha: " + estado.borda[j])
@@ -201,17 +205,17 @@ class Jogo8 {
   }
   buscaEmProfundidade() {
     var estadoInicial = this.getCopy()
+    //console.log(this.checkIsSolve(estadoInicial.borda))
     estadoInicial.resolucao = []
     var estados = [estadoInicial]
     while (estados.length > 0) {
-      while (this.checkRepeat(estados[0]) === false) estados.shift()
-      var estado = estados[0]
-      Estado.repetidos.push(estado)
+      //while (this.checkRepeat(estados[0]) === false) estados.shift()
+      var estado = estados.pop()
       if (estado.verificaObjetivo()) {
         return estado.resolucao
       }
       estados = this.extend(estados, estado.visita())
-      estados.pop()
+      //Estado.repetidos.push(estado)
     }
   }
   tam() {
@@ -235,8 +239,6 @@ class Jogo8 {
   }
 
   buscaA() {
-    console.log("Fazendo busca em A")
-
     var estados = new MinHeap(null, function(a, b) {
       return a.distancia - b.distancia
     })
@@ -256,6 +258,7 @@ class Jogo8 {
     }
   }
   resolve() {
+    this.algoritmo = $("#algoritmos").val()
     if (this.algoritmo == Algoritmo.LARGURA) {
       return this.buscaEmLargura()
     } else if (this.algoritmo == Algoritmo.PROFUNDIDADE) {
@@ -263,5 +266,12 @@ class Jogo8 {
     } else {
       return this.buscaA()
     }
+  }
+  checkIsSolve(arr) {
+    for (let i = 0; i < arr.length; i++)
+      for (let j = 0; j < arr.length; j++)
+        if (arr[j][i] > 0 && arr[j][i] > 0 && arr[j][i] > arr[i][j]) count++
+    if (count % 2 == 0) return true
+    return false
   }
 }

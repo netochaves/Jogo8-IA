@@ -1,13 +1,13 @@
 class Jogo8GUI {
-  constructor($container, algoritmo) {
+  constructor($container) {
     this.$container = $container
     this.dimensao = 3
     this.tamanho = 50
     this.margem = 10
     this.velocidade = 100
     this.trocas = 10
-    this.algoritmo = algoritmo
-    this.jogo = new Jogo8(this.dimensao, algoritmo)
+    this.jogo = new Jogo8(this.dimensao)
+    this.ultimoTabuleiro = []
     this.desenha()
     var self = this
     var Gerar = function() {
@@ -158,6 +158,7 @@ class Jogo8GUI {
     }, this.velocidade)
   }
   resolve(jogo, resposta, callbackFunction) {
+    if (resposta === false) return false
     if (resposta.length == 0) {
       callbackFunction()
       return
