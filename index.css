@@ -1,0 +1,11 @@
+.puzzle {
+  position: relative;
+}
+.puzzle div {
+  position: absolute;
+  border: 1px solid black;
+  text-align: center;
+  box-shadow: 1px 1px 1px black;
+  background-color: #e9e1fa;
+  cursor: pointer;
+}
