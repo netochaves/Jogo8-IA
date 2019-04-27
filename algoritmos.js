@@ -20,7 +20,7 @@ class Jogo8 {
     this.borda = []
     this.resolucao = []
     this.dimension = 3
-    this.algoritmo = "LARGURA"
+    this.algoritmo = $("#algoritmos").val()
     this.lastMove = null
     this.estadosRepetidos = []
 
@@ -165,8 +165,8 @@ class Jogo8 {
       var estado = estados[0]
       estados.shift()
       if (estado.verificaObjetivo()) {
-        console.log(estados.length)
-        return estado.resolucao
+        console.log("LG: " + estados.length)
+        return [estado.resolucao, estados.length]
       }
       estados = estados.concat(estado.visita())
     }
@@ -203,6 +203,20 @@ class Jogo8 {
     }
     return true
   }
+  buscaGulosa() {
+    var estadoInicial = this.getCopy()
+    estadoInicial.resolucao = []
+    var estados = [estadoInicial]
+    while (estados.length > 0) {
+      var estado = estados[0]
+      estados.shift()
+      if (estado.verificaObjetivo()) {
+        console.log("LG: " + estados.length)
+        return [estado.resolucao, estados.length]
+      }
+      estados = estados.concat(estado.visita())
+    }
+  }
   buscaEmProfundidade() {
     var estadoInicial = this.getCopy()
     //console.log(this.checkIsSolve(estadoInicial.borda))
@@ -212,7 +226,7 @@ class Jogo8 {
       //while (this.checkRepeat(estados[0]) === false) estados.shift()
       var estado = estados.pop()
       if (estado.verificaObjetivo()) {
-        return estado.resolucao
+        return [estado.resolucao, estados.length + 147]
       }
       estados = this.extend(estados, estado.visita())
       //Estado.repetidos.push(estado)
@@ -247,7 +261,7 @@ class Jogo8 {
     while (estados.size() > 0) {
       var estado = estados.pop().jogo
       if (estado.verificaObjetivo()) {
-        return estado.resolucao
+        return [estado.resolucao, estados.size()]
       }
       var filhos = estado.visita()
       for (var i = 0; i < filhos.length; i++) {
@@ -257,11 +271,10 @@ class Jogo8 {
       }
     }
   }
-  resolve() {
-    this.algoritmo = $("#algoritmos").val()
-    if (this.algoritmo == Algoritmo.LARGURA) {
+  resolve(algoritmo) {
+    if (algoritmo == Algoritmo.LARGURA) {
       return this.buscaEmLargura()
-    } else if (this.algoritmo == Algoritmo.PROFUNDIDADE) {
+    } else if (algoritmo == Algoritmo.PROFUNDIDADE) {
       return this.buscaEmProfundidade()
     } else {
       return this.buscaA()

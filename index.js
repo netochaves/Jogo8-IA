@@ -10,7 +10,8 @@ class Jogo8GUI {
     this.ultimoTabuleiro = []
     this.desenha()
     var self = this
-    var Gerar = function() {
+
+    var disable = function() {
       $container
         .parent()
         .find("#gerar")
@@ -19,15 +20,54 @@ class Jogo8GUI {
         .parent()
         .find("#resolver")
         .attr("disabled", "disabled")
+    }
+    var removeDisable = function() {
+      $container
+        .parent()
+        .find("#gerar")
+        .removeAttr("disabled")
+      $container
+        .parent()
+        .find("#resolver")
+        .removeAttr("disabled")
+    }
+    var details = function(i, time, algoritmo, nos, custo) {
+      $container
+        .parent()
+        .find("#details" + i)
+        .html(
+          "<h3>Busca:" +
+            algoritmo +
+            "</h3><br />" +
+            "Tempo gasto: " +
+            time +
+            "ms" +
+            "<br />" +
+            "Número de nos gerados: " +
+            nos +
+            "<br />" +
+            "Custo da solução: " +
+            custo
+        )
+    }
+    var removeDetails = function() {
+      $container
+        .parent()
+        .find("#details0")
+        .html("")
+      $container
+        .parent()
+        .find("#details1")
+        .html("")
+      $container
+        .parent()
+        .find("#details2")
+        .html("")
+    }
+    var Gerar = function() {
+      disable()
       self.geraAleatorio(self.jogo, self.trocas, function() {
-        $container
-          .parent()
-          .find("#gerar")
-          .removeAttr("disabled")
-        $container
-          .parent()
-          .find("#resolver")
-          .removeAttr("disabled")
+        removeDisable()
       })
     }
     $container
@@ -39,32 +79,55 @@ class Jogo8GUI {
       .parent()
       .find("#resolver")
       .on("click", function() {
+        var algoritmo = $("#algoritmos").val()
         $container.parent().find("#tempo")
-        var start_time = new Date()
-        var resposta = self.jogo.resolve()
-        var time = (new Date() - start_time) / 1000.0
-        $container
-          .parent()
-          .find("#tempo")
-          .html(time)
-        $container
-          .parent()
-          .find("#gerar")
-          .attr("disabled", "disabled")
-        $container
-          .parent()
-          .find("#resolver")
-          .attr("disabled", "disabled")
-        self.resolve(self.jogo, resposta, function() {
+        if (algoritmo === "todos") {
+          removeDetails()
+          var start_time1 = new Date()
+          var profundidade = self.jogo.resolve("PROFUNDIDADE")
+          var time1 = (new Date() - start_time1) / 1000.0
+          var num_nos1 = profundidade[1]
+          details(0, time1, "Profundidade", num_nos1, profundidade[0].length)
+          var start_time2 = new Date()
+          var largura = self.jogo.resolve("LARGURA")
+          var time2 = (new Date() - start_time2) / 1000.0
+          var num_nos2 = largura[1]
+          details(1, time2, "Largura", num_nos2, largura[0].length)
+          var start_time3 = new Date()
+          var a = self.jogo.resolve("A")
+          var time3 = (new Date() - start_time3) / 1000.0
+          var num_nos3 = a[1]
+          details(2, time3, "A*", num_nos3, a[0].length)
+          disable()
+          self.resolve(self.jogo, a[0], function() {
+            removeDisable()
+          })
+        } else {
+          var start_time = new Date()
+          var resposta = self.jogo.resolve(algoritmo)
+          var time = (new Date() - start_time) / 1000.0
+          disable()
+          removeDetails()
           $container
             .parent()
-            .find("#gerar")
-            .removeAttr("disabled")
-          $container
-            .parent()
-            .find("#resolver")
-            .removeAttr("disabled")
-        })
+            .find("#details1")
+            .html(
+              "Busca: " +
+                algoritmo +
+                "<br />" +
+                "Tempo gasto: " +
+                time +
+                "<br />" +
+                "Número de nos gerados: " +
+                resposta[1] +
+                "<br />" +
+                "Custo da solução: " +
+                resposta[0].length
+            )
+          self.resolve(self.jogo, resposta[0], function() {
+            removeDisable()
+          })
+        }
       })
     // move um número ao clicar nele
     $container.find("div").on("click", function() {
@@ -158,7 +221,6 @@ class Jogo8GUI {
     }, this.velocidade)
   }
   resolve(jogo, resposta, callbackFunction) {
-    if (resposta === false) return false
     if (resposta.length == 0) {
       callbackFunction()
       return

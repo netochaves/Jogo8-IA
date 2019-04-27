@@ -20,6 +20,7 @@
       <div class="custom-select" style="width:200px;">
         Algoritmo
         <select id="algoritmos">
+          <option value="todos">Todos</option>
           <option value="PROFUNDIDADE">Profundidade</option>
           <option value="LARGURA">Largura</option>
           <option value="GULOSA">Gulosa</option>
@@ -33,17 +34,18 @@
       >
         <br />
       </div>
-      Tempo gasto: <span id="tempo">0</span>ms
       <button id="resolver" onclick="">Resolver</button>
       <button id="gerar">Gerar</button>
+      <br />
+      <div id="all">
+        <div><h4 id="details0"></h4></div>
+        <div><h4 id="details1"></h4></div>
+        <div><h4 id="details2"></h4></div>
+      </div>
     </center>
 
     <script type="text/javascript">
-      var value
-      const getVal = function() {
-        value = $("#algoritmos").val()
-      }
-      new Jogo8GUI($("#container-bfs"), value)
+      new Jogo8GUI($("#container-bfs"))
     </script>
   </body>
 </html>
