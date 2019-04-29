@@ -8,7 +8,8 @@ Direction = {
 Algoritmo = {
   LARGURA: "LARGURA",
   PROFUNDIDADE: "PROFUNDIDADE",
-  A: "A"
+  A: "A",
+  GULOSA: "GULOSA"
 }
 
 Estado = {
@@ -203,13 +204,48 @@ class Jogo8 {
     }
     return true
   }
+  posicaoNumero(num) {
+    for (let i = 0; i < this.borda.length; i++) {
+      for (let j = 0; j < this.borda[i].length; j++) {
+        if (this.borda[i][j] === num) return [i, j]
+      }
+    }
+  }
+  sum(arr) {
+    var soma = 0
+    arr.forEach(i => {
+      soma += i
+    })
+    return soma
+  }
+  heuristicaGulosa(estado) {
+    var heuristica = []
+    var objetivo = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+
+    for (let i = 0; i < objetivo.length; i++) {
+      for (let j = 0; j < objetivo[i].length; j++) {
+        if (objetivo[i][j] === 0) continue
+        if (objetivo[i][j] === estado.borda[i][j]) heuristica.push(0)
+        else {
+          var pos = estado.posicaoNumero(objetivo[i][j])
+          heuristica.push(Math.abs(pos[0] - i) + Math.abs(pos[1] - j))
+        }
+      }
+    }
+    return this.sum(heuristica)
+  }
   buscaGulosa() {
     var estadoInicial = this.getCopy()
     estadoInicial.resolucao = []
     var estados = [estadoInicial]
+    var value = []
     while (estados.length > 0) {
-      var estado = estados[0]
-      estados.shift()
+      estados.forEach(e => {
+        value.push(this.heuristicaGulosa(e))
+      })
+      var indice = value.indexOf(Math.min(value))
+      var estado = estados[indice]
+      estados.splice(indice, 1)
       if (estado.verificaObjetivo()) {
         console.log("LG: " + estados.length)
         return [estado.resolucao, estados.length]

@@ -9,3 +9,7 @@
   background-color: green;
   cursor: pointer;
 }
+.details {
+  display: flex;
+  justify-content: space-evenly;
+}

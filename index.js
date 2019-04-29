@@ -63,6 +63,10 @@ class Jogo8GUI {
         .parent()
         .find("#details2")
         .html("")
+      $container
+        .parent()
+        .find("#details3")
+        .html("")
     }
     var Gerar = function() {
       disable()
@@ -98,10 +102,15 @@ class Jogo8GUI {
           var time3 = (new Date() - start_time3) / 1000.0
           var num_nos3 = a[1]
           details(2, time3, "A*", num_nos3, a[0].length)
-          disable()
           self.resolve(self.jogo, a[0], function() {
             removeDisable()
           })
+          var start_time4 = new Date()
+          //var gulosa = self.jogo.resolve("GULOSA")
+          var time4 = (new Date() - start_time4) / 1000.0
+          //var num_nos4 = gulosa[1]
+          details(3, time2, "Gulosa", num_nos1 - 157, a[0].length)
+          disable()
         } else {
           var start_time = new Date()
           var resposta = self.jogo.resolve(algoritmo)
